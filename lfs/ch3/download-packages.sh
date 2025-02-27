@@ -27,17 +27,22 @@ pdlchk()
 
 dlpkg()
 {
+  pushd $LFS/sources > /dev/null
+
   clean
   wget --timestamping "https://www.linuxfromscratch.org/lfs/view/$1/wget-list-sysv"
   wget --timestamping --input-file=wget-list-sysv --continue --directory-prefix=$LFS/sources
   wget --timestamping "https://www.linuxfromscratch.org/lfs/view/$1/md5sums"
   check
+
+  popd > /dev/null
 }
 
 check()
 {
   if md5sum -c md5sums
   then
+    popd > /dev/null
     echo "OK:    downloaded source packages"
     chown root:root $LFS/sources/*
     exit 0
